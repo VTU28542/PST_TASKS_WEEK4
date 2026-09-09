@@ -1,0 +1,103 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int m = sc.nextInt();
+        int n = sc.nextInt();
+        int r = sc.nextInt();
+
+        int[][] matrix = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = sc.nextInt();
+            }
+        }
+
+        int layers = Math.min(m, n) / 2;
+
+        for (int layer = 0; layer < layers; layer++) {
+
+            ArrayList<Integer> ring = new ArrayList<>();
+
+            int top = layer;
+            int bottom = m - 1 - layer;
+            int left = layer;
+            int right = n - 1 - layer;
+
+            // Traverse ring in clockwise order
+            // Top row: left -> right
+            for (int j = left; j <= right; j++) {
+                ring.add(matrix[top][j]);
+            }
+
+            // Right column: top+1 -> bottom
+            for (int i = top + 1; i <= bottom; i++) {
+                ring.add(matrix[i][right]);
+            }
+
+            // Bottom row: right-1 -> left
+            for (int j = right - 1; j >= left; j--) {
+                ring.add(matrix[bottom][j]);
+            }
+
+            // Left column: bottom-1 -> top+1
+            for (int i = bottom - 1; i > top; i--) {
+                ring.add(matrix[i][left]);
+            }
+
+            int len = ring.size();
+
+            // Anti-clockwise rotation
+            int shift = r % len;
+
+            // Put rotated ring back
+            int index = shift;
+
+            // Top row
+            for (int j = left; j <= right; j++) {
+                matrix[top][j] = ring.get(index);
+                index = (index + 1) % len;
+            }
+
+            // Right column
+            for (int i = top + 1; i <= bottom; i++) {
+                matrix[i][right] = ring.get(index);
+                index = (index + 1) % len;
+            }
+
+            // Bottom row
+            for (int j = right - 1; j >= left; j--) {
+                matrix[bottom][j] = ring.get(index);
+                index = (index + 1) % len;
+            }
+
+            // Left column
+            for (int i = bottom - 1; i > top; i--) {
+                matrix[i][left] = ring.get(index);
+                index = (index + 1) % len;
+            }
+        }
+
+        // Print matrix
+        StringBuilder output = new StringBuilder();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (j > 0) {
+                    output.append(" ");
+                }
+                output.append(matrix[i][j]);
+            }
+            output.append("\n");
+        }
+
+        System.out.print(output);
+
+        sc.close();
+    }
+}
